@@ -3,6 +3,6 @@ A client-side html injection utility
 
 ## Code examples
 
-<div sinject=“http://www.someplace.com/header.html”>
+&lt;div sinject=“http://www.someplace.com/header.html”&gt;
 
-<script>sinject(http://www.someplace.com/header.html);</script>
+&lt;script&gt;sinject(http://www.someplace.com/header.html);&lt;/script&gt;
