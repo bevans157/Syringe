@@ -5,4 +5,4 @@ A client-side html injection utility
 
 &lt;div sinject=“http://www.someplace.com/header.html”&gt;
 
-&lt;script&gt;sinject(http://www.someplace.com/header.html);&lt;/script&gt;
+&lt;script&gt; sinject(http://www.someplace.com/header.html); &lt;/script&gt;
