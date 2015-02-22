@@ -1,7 +1,6 @@
 # Syringe
 A client-side html injection utility
 
-Currently this library does not support document.write functions within child scripts.
 
 ## Code examples
 
