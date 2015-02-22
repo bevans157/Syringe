@@ -144,11 +144,14 @@
                 var match = new RegExp(scriptreg, 'im');
                 var src = null;
                 var type = '';
-                type = scripts[s].match(/type=[\"\']([^\"\']*)[\"\']/);
-                if (type) {
-                    type = type[1];
+                var tag = scripts[s].match(match)[1];
+                if (tag) {
+                    type = tag.match(/type=[\"\']([^\"\']*)[\"\']/);
+                    if (type) {
+                        type = type[1];
+                    }
+                    src = tag.match(/src=[\"\']([^\"\']*)[\"\']/);
                 }
-                src = scripts[s].match(/src=[\"\']([^\"\']*)[\"\']/);
                 if (src) {
                     src = src[1];
                     appendScript(src, type);
