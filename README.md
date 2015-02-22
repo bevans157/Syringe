@@ -10,12 +10,19 @@ A simple attribute can be added to a div and it's contents will be replaced with
 <div synject=“http://www.someplace.com/header.html”>
 ```
 
-Syringe can be called in line at any time as follows )
+Syringe can be called in line at any time by passing the ID of the element to inject the html into and the path to the file:
 
 ```
-<script> synject("http://www.someplace.com/header.html"); </script>
-<div synclude="/demos/header.html" cache="false" />
+<script>
+synject('mydiv', 'http://www.someplace.com/header.html');
+</script>
+<div id="mydiv"></div>
 ```
+
+NOTE:
+
+Include files are included in their entirety, there is no need for HTML, HEAD or BODY tags.
+
 
 ## Setup
 
