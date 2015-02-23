@@ -7,7 +7,8 @@ A client-side html injection utility
 A simple attribute can be added to a div and it's contents will be replaced with the include content when document.load occurs (or on demand at any time by calling syringe.inject() )
 
 ```
-<div synject=“http://www.someplace.com/header.html”>
+<div synject=“http://www.someplace.com/header.html”></div>
+<span synject=“http://www.someplace.com/header.html”></span>
 ```
 
 Syringe can be called in line at any time by passing the ID of the element to inject the html into and the path to the file:
