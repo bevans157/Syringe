@@ -43,19 +43,32 @@
         return parser.href;
     }
 
+    // Get elements
+    function getElements(root, type) {
+        var elems = [];
+        if( !root.querySelectorAll ) {
+            return root.getElementsByTagName(type);
+        }else{
+            return root.querySelectorAll(type);
+        }
+    }
+
     // Get elements by tag and attributes
     function getSynjectors(root) {
         var divs = [];
+        var spans = [];
         var synjectors = [];
         root = (root != null)?root:document;
-        if( !root.querySelectorAll ) {
-            divs = root.getElementsByTagName('div');
-        }else{
-            divs = root.querySelectorAll("div");
-        }
+        divs = getElements(root, 'div');
+        spans = getElements(root, 'span');
         for (var i = 0; i < divs.length; i++) {
             if (divs[i].hasAttribute("synject") && !divs[i].hasAttribute("synjected")) {
                 synjectors.push(divs[i])
+            }
+        }
+        for (var i = 0; i < spans.length; i++) {
+            if (spans[i].hasAttribute("synject") && !spans[i].hasAttribute("synjected")) {
+                synjectors.push(spans[i])
             }
         }
         if (synjectors.length > 0) {
@@ -119,13 +132,14 @@
     }
 
     // Append a acript to the head
-    function appendScript(path, type) {
+    function appendScript(target, path, type) {
         type = (type)? type:"text/javascript";
-        var head = document.getElementsByTagName("head")[0];
+//        var head = document.getElementsByTagName("head")[0];
         var js = document.createElement("script");
         js.type = type;
         js.src = path;
-        head.appendChild(js);
+        // head.appendChild(js);
+        target.appendChild(js);
     }
 
     // Simulate the normal processing of Javascript
@@ -154,7 +168,7 @@
                 }
                 if (src) {
                     src = src[1];
-                    appendScript(src, type);
+                    appendScript(target, src, type);
                     target.innerHTML = target.innerHTML.replace(scripts[s], '')
                 }
                 else {
