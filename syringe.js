@@ -45,7 +45,6 @@
 
     // Get elements
     function getElements(root, type) {
-        var elems = [];
         if( !root.querySelectorAll ) {
             return root.getElementsByTagName(type);
         }else{
