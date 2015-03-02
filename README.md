@@ -1,5 +1,5 @@
 # Syringe
-A client-side html injection utility
+A stand alone (no jQuery) html client-side code injection utility
 
 
 ## Code examples
