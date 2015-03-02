@@ -17,19 +17,6 @@
     //===============
     var cache = {};
     var que = {};
-    var xmlhttp = {};
-
-
-    //===========
-    // Initialize
-    //===========
-
-    if (window.XMLHttpRequest) { // IE7+, Firefox, Chrome, Opera, Safari
-        xmlhttp=new XMLHttpRequest();
-    }
-    else { // Legacy IE6, IE5
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
 
 
     //==========
@@ -83,22 +70,21 @@
         if (typeof XMLHttpRequest !== 'undefined') {
             return new XMLHttpRequest();
         }
-        var versions = [
+        var xobjects = [
             "MSXML2.XmlHttp.5.0",
             "MSXML2.XmlHttp.4.0",
             "MSXML2.XmlHttp.3.0",
-            "MSXML2.XmlHttp.2.0",
             "Microsoft.XmlHttp"
         ];
-        var xhr;
-        for(var i = 0; i < versions.length; i++) {
+        var xmlhttp;
+        for(var i = 0; i < xobjects.length; i++) {
             try {
-                xhr = new ActiveXObject(versions[i]);
+                xmlhttp = new ActiveXObject(xobjects[i]);
                 break;
             } catch (e) {
             }
         }
-        return xhr;
+        return xmlhttp;
     };
 
     // Get include content via ajax
@@ -133,11 +119,9 @@
     // Append a acript to the head
     function appendScript(target, path, type) {
         type = (type)? type:"text/javascript";
-//        var head = document.getElementsByTagName("head")[0];
         var js = document.createElement("script");
         js.type = type;
         js.src = path;
-        // head.appendChild(js);
         target.appendChild(js);
     }
 
