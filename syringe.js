@@ -41,20 +41,17 @@
 
     // Get elements by tag and attributes
     function getSynjectors(root) {
-        var divs = [];
-        var spans = [];
+        var tags = [];
+        var elements = [];
         var synjectors = [];
         root = (root != null)?root:document;
-        divs = getElements(root, 'div');
-        spans = getElements(root, 'span');
-        for (var i = 0; i < divs.length; i++) {
-            if (divs[i].hasAttribute("synject") && !divs[i].hasAttribute("synjected")) {
-                synjectors.push(divs[i])
-            }
-        }
-        for (var i = 0; i < spans.length; i++) {
-            if (spans[i].hasAttribute("synject") && !spans[i].hasAttribute("synjected")) {
-                synjectors.push(spans[i])
+        tags = ['div', 'span'];
+        for (var t = 0; t < tags.length; t++) {
+            elements = getElements(root, tags[t]);
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].hasAttribute("synject") && !elements[i].hasAttribute("synjected")) {
+                    synjectors.push(elements[i])
+                }
             }
         }
         if (synjectors.length > 0) {
@@ -101,7 +98,7 @@
 
     // Build call to fetch and handle content
     function fetchContent(url) {
-        callXmlhttp(url, function(url) {
+        callXmlhttp(url, function() {
             return function(content) {
                 var targets = que[url]["targets"];
                 delete que[url];
@@ -113,7 +110,7 @@
                 }
                 cache[url] = content;
             }
-        }(url));
+        }());
     }
 
     // Append a acript to the head
@@ -205,7 +202,7 @@
     //=========
 
     // Force an include to a target DOM element
-    window.synject = function (target, path) {
+    global.synject = function (target, path) {
         if (!target) {return;}
         if (typeof target == 'string' || target instanceof String) {
             target = document.getElementById(target);
