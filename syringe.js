@@ -28,7 +28,7 @@
         var parser = document.createElement('a');
         parser.href = link;
         return parser.href;
-    }
+    };
 
     // Get elements
     function getElements(root, type) {
@@ -37,7 +37,7 @@
         }else{
             return root.querySelectorAll(type);
         }
-    }
+    };
 
     // Get elements by tag and attributes
     function getSynjectors(root) {
@@ -60,7 +60,7 @@
         else {
             return null;
         }
-    }
+    };
 
     // Generate xmlHttp
     function getXmlhttp() {
@@ -111,56 +111,69 @@
                 cache[url] = content;
             }
         }());
-    }
+    };
 
     // Append a acript to the head
     function appendScript(target, path, type) {
+        // Function does not support document.write inside included scripts
+        // In order to support scripts must be loaded via ajax and eval.
         type = (type)? type:"text/javascript";
         var js = document.createElement("script");
         js.type = type;
         js.src = path;
         target.appendChild(js);
-    }
+    };
 
     // Simulate the normal processing of Javascript
     function executeJS(target){
-        var scriptreg = '(?:<script(.*)?>)((\n|.)*?)(?:</script>)'; //Regex <script> tags.
-        var match = new RegExp(scriptreg, 'img');
-        var scripts = target.innerHTML.match(match);
-        var dwoutput = '';
+        var scriptreg = '<script(?:(([^>]*))\\/>|((?:(?!\\/>)[^>])*)>((?:(?!<\\/script>)[\\s\\S])*)<\\/script>)'; //Regex <script> tags.
+//      <script(?:([^>]*)\/>|((?:(?!\/>)[^>])*)>((?:(?!<\/script>)[\s\S])*)<\/script>)
+        var matchg = new RegExp(scriptreg, 'img');
+        var matchi = new RegExp(scriptreg, 'im');
         var doc = document.write; // Store document.write for overloading.
-        document.write = function (content) {
+        var dwoutput = '';
+        document.write = function (content) { // Monkey patch
             dwoutput += content;
         };
-        if (scripts) {
-            for (var s = 0; s < scripts.length; s++) {
-                var js = '';
-                var match = new RegExp(scriptreg, 'im');
-                var src = null;
-                var type = '';
-                var tag = scripts[s].match(match)[1];
-                if (tag) {
-                    type = tag.match(/type=[\"\']([^\"\']*)[\"\']/);
-                    if (type) {
-                        type = type[1];
+        var newscripts = [];
+        function executeJStext(content){
+            var scripts = content.match(matchg);
+            if (scripts) {
+                for (var s = 0; s < scripts.length; s++) {
+                    var js = '';
+                    var src = null;
+                    var type = '';
+                    var tag = scripts[s].match(matchi)[2]+scripts[s].match(matchi)[3];
+                    if (tag) {
+                        type = tag.match(/type=[\"\']([^\"\']*)[\"\']/);
+                        if (type) {
+                            type = type[1];
+                        }
+                        src = tag.match(/src=[\"\']([^\"\']*)[\"\']/);
                     }
-                    src = tag.match(/src=[\"\']([^\"\']*)[\"\']/);
-                }
-                if (src) {
-                    src = src[1];
-                    appendScript(target, src, type);
-                    target.innerHTML = target.innerHTML.replace(scripts[s], '')
-                }
-                else {
-                    js = scripts[s].match(match)[2];
-                    window.eval('try{' + js + '}catch(e){}');
-                    target.innerHTML = target.innerHTML.replace(scripts[s], dwoutput)
-                    dwoutput = '';
+                    if (src) {
+                        src = src[1];
+                        newscripts.push({"src":src, "type":type});
+                        content = content.replace(scripts[s], '')
+                    }
+                    else {
+                        js = scripts[s].match(matchi)[4];
+                        window.eval('try{' + js + '}catch(e){}');
+                        content = content.replace(scripts[s], executeJStext(dwoutput))
+                        dwoutput = '';
+                    }
                 }
             }
+            return content;
         }
+        target.innerHTML = executeJStext(target.innerHTML);
+        for (var i = 0; i < newscripts.length; i++) {
+            console.log(newscripts[i]["src"]);
+            appendScript(target, newscripts[i]["src"], newscripts[i]["type"]);
+        }
+        target.innerHTML = target.innerHTML+dwoutput;
         document.write = doc; // Restore document.write
-    }
+    };
 
 
     //=====
@@ -194,7 +207,7 @@
                 }
             }
         }
-    }
+    };
 
 
     //=========
@@ -217,7 +230,7 @@
             que[url]["targets"].push(target)
             fetchContent(url);
         }
-    }
+    };
 
     // Add an event document
     document.addEventListener('DOMContentLoaded', function () {
