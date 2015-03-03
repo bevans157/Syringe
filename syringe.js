@@ -54,12 +54,7 @@
                 }
             }
         }
-        if (synjectors.length > 0) {
-            return synjectors;
-        }
-        else {
-            return null;
-        }
+        return synjectors;
     };
 
     // Generate xmlHttp
@@ -100,7 +95,7 @@
     function fetchContent(url) {
         callXmlhttp(url, function() {
             return function(content) {
-                var targets = que[url]["targets"];
+                var targets = que[url]["t"];
                 delete que[url];
                 for (var i = 0; i < targets.length; i++) {
                     targets[i].innerHTML = content;
@@ -117,58 +112,50 @@
     function appendScript(target, path, type) {
         // Function does not support document.write inside included scripts
         // In order to support scripts must be loaded via ajax and eval.
-        type = (type)? type:"text/javascript";
         var js = document.createElement("script");
-        js.type = type;
+        js.type = (type)? type:"text/javascript";
         js.src = path;
         target.appendChild(js);
     };
 
     // Simulate the normal processing of Javascript
     function executeJS(target){
-        var scriptreg = '<script(?:(([^>]*))\\/>|((?:(?!\\/>)[^>])*)>((?:(?!<\\/script>)[\\s\\S])*)<\\/script>)'; //Regex <script> tags.
-//      <script(?:([^>]*)\/>|((?:(?!\/>)[^>])*)>((?:(?!<\/script>)[\s\S])*)<\/script>)
-        var matchg = new RegExp(scriptreg, 'img');
-        var matchi = new RegExp(scriptreg, 'im');
+        var match = /<script(?:(([^>]*))\/>|((?:(?!\/>)[^>])*)>((?:(?!<\/script>)[\s\S])*)<\/script>)/im; //Regex <script> tags.
         var doc = document.write; // Store document.write for overloading.
         var dwoutput = '';
         document.write = function (content) { // Monkey patch
             dwoutput += content;
         };
+        var stag;
         var newscripts = [];
         function executeJStext(content){
-            var scripts = content.match(matchg);
-            if (scripts) {
-                for (var s = 0; s < scripts.length; s++) {
-                    var js = '';
-                    var src = null;
-                    var type = '';
-                    var tag = scripts[s].match(matchi)[2]+scripts[s].match(matchi)[3];
-                    if (tag) {
-                        type = tag.match(/type=[\"\']([^\"\']*)[\"\']/);
-                        if (type) {
-                            type = type[1];
-                        }
-                        src = tag.match(/src=[\"\']([^\"\']*)[\"\']/);
+            while (stag = content.match(match)) {
+                var js;
+                var src;
+                var type;
+                var tag = stag[2]+stag[3];
+                if (tag) {
+                    type = tag.match(/type=[\"\']([^\"\']*)[\"\']/);
+                    if (type) {
+                        type = type[1];
                     }
-                    if (src) {
-                        src = src[1];
-                        newscripts.push({"src":src, "type":type});
-                        content = content.replace(scripts[s], '')
-                    }
-                    else {
-                        js = scripts[s].match(matchi)[4];
-                        window.eval('try{' + js + '}catch(e){}');
-                        content = content.replace(scripts[s], executeJStext(dwoutput))
-                        dwoutput = '';
-                    }
+                    src = tag.match(/src=[\"\']([^\"\']*)[\"\']/);
+                }
+                if (src) {
+                    newscripts.push({"src":src[1], "type":type});
+                    content = content.replace(stag[0], '')
+                }
+                else {
+                    js = stag[4];
+                    window.eval('try{' + js + '}catch(e){}');
+                    content = content.replace(stag[0], executeJStext(dwoutput))
+                    dwoutput = '';
                 }
             }
             return content;
         }
         target.innerHTML = executeJStext(target.innerHTML);
         for (var i = 0; i < newscripts.length; i++) {
-            console.log(newscripts[i]["src"]);
             appendScript(target, newscripts[i]["src"], newscripts[i]["type"]);
         }
         target.innerHTML = target.innerHTML+dwoutput;
@@ -187,14 +174,12 @@
             for (var i = 0; i < synjectors.length; i++) {
                 var url = getFullURL(synjectors[i].getAttribute("synject"));
                 if (que[url]) {
-                    que[url]["targets"].push(synjectors[i]);
+                    que[url]["t"].push(synjectors[i]);
                 }
                 else {
                     if (synjectors[i].getAttribute("cache") == "false" || !cache[url] ) {
                         // get file
-                        que[url] = {};
-                        que[url]["targets"] = [];
-                        que[url]["targets"].push(synjectors[i])
+                        que[url] = {t:[synjectors[i]]};
                         fetchContent(url);
                     }
                     else {
@@ -222,12 +207,10 @@
         }
         var url = getFullURL(path);
         if (que[url]) {
-            que[url]["targets"].push(target);
+            que[url]["t"].push(target);
         }
         else {
-            que[url] = {};
-            que[url]["targets"] = [];
-            que[url]["targets"].push(target)
+            que[url] = {t:[target]};
             fetchContent(url);
         }
     };

@@ -60,6 +60,7 @@ http-server ./ -p 9191
 
 ## Deployment
 
+Using https://github.com/mishoo/UglifyJS2
 
 ```
 npm install uglify-js -g
