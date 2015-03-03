@@ -95,14 +95,13 @@
     function fetchContent(url) {
         callXmlhttp(url, function() {
             return function(content) {
-                var targets = que[url]["t"];
-                delete que[url];
-                for (var i = 0; i < targets.length; i++) {
-                    targets[i].innerHTML = content;
-                    executeJS(targets[i]);
-                    targets[i].setAttribute("synjected", "true");
-                    loadSynjectors(targets[i]);
+                for (var i = 0; i < que[url]["t"].length; i++) {
+                    que[url]["t"][i].innerHTML = content;
+                    executeJS(que[url]["t"][i]);
+                    que[url]["t"][i].setAttribute("synjected", "true");
+                    loadSynjectors(que[url]["t"][i]);
                 }
+                delete que[url];
                 cache[url] = content;
             }
         }());
