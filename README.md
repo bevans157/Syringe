@@ -66,5 +66,5 @@ npm install uglify-js -g
 ```
 
 ```
-uglifyjs ./syringe.js -o ./syringe.min.js --source-map ./syringe.min.js.map -c -m
+uglifyjs ./syringe.js -o ./syringe.min.js -c -m
 ```
