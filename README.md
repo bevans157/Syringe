@@ -1,5 +1,5 @@
 # Syringe
-A stand alone (no jQuery) html client-side code injection utility
+A stand alone (no jQuery) html client-side code injection utility. Syringe allows you to include files client-side with all the same functions and support as if they were included on the server-side. 
 
 Syringe supports:
 
@@ -10,6 +10,7 @@ Syringe supports:
 * Include by attribute (Divs and Spans only)
 * include by program call (any element with an ID)
 * Full, partial and relative asset paths
+* Full caching
 
 ## Code examples
 
