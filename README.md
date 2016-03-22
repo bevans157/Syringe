@@ -12,6 +12,12 @@ Syringe supports:
 * Full, partial and relative asset paths
 * Full caching
 
+## Support
+
+Syringe is designed to work on legacy browsers going back as far as possble (including IE6).
+
+The decision be stand alone and no require jQuery was taken assuming that the use case for this library was primarily implementation by non programmers in sites with little or no dynamic behaviour or frameworks. For more experienced developers and advanced sites there are other technical solutions available. 
+
 ## Code examples
 
 A simple attribute can be added to a div and it's contents will be replaced with the include content when document.load occurs (or on demand at any time by calling syringe.inject() )
