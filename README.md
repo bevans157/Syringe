@@ -1,16 +1,21 @@
 # Syringe
 A stand alone (no jQuery) html client-side code injection utility. Syringe allows you to include files client-side with all the same functions and support as if they were included on the server-side. 
 
+The use case for this project was to give a website with no serverside processing the ability to strucutre HTML code into multiple files, for example includes of common code (headers/footers, etc) 
+
+It was intended more as a thought experiment than a "product", however I have used it in several cases where pages/content needed to be searved as static files (e.g. from micro devices)
+
 Syringe supports:
 
+* Including HTML files that may have CSS or JS embedded.
 * Includes within includes
 * Embeded scripts
-* Document.write()
+* Handling inline document.write() calls 
 * Remote script calls
 * Include by attribute (Divs and Spans only)
 * include by program call (any element with an ID)
 * Full, partial and relative asset paths
-* Full caching
+* Full caching/memoization of calls
 
 ## Support
 
